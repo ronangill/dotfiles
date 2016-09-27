@@ -1,0 +1,72 @@
+#!/bin/bash
+echo "Loading exports"
+
+export EDITOR=vim
+
+#Ant
+
+if [ -d /usr/local/apache-ant ]; then
+    export ANT_HOME="/usr/local/apache-ant"
+    export PATH=${ANT_HOME}/bin:$PATH
+fi
+
+# Maven
+if [ -d /usr/local/apache-maven ]; then
+    export MVN_HOME=/usr/local/apache-maven
+    export MAVEN_OPTS="-client  -Xmx4g -Xms512m -XX:MaxPermSize=1g -Dmaven.test.failure.ignore=false"
+    export PATH=${MVN_HOME}/bin:${PATH}
+fi
+
+#JBoss
+if [ -d /usr/local/jboss ]; then
+    export JBOSS_HOME=/usr/local/jboss
+    export PATH=$PATH:$JBOSS_HOME/bin
+fi
+
+# JRuby
+if [ -d /usr/local/jruby ]; then
+    export PATH=/usr/local/jruby/bin:${PATH}
+fi
+
+# Jython
+if [ -d /usr/local/jython ]; then
+    export PATH=/usr/local/jython/bin/:${PATH}
+fi
+
+#Gradle
+if [ -d /usr/local/gradle ]; then
+    export GRADLE_HOME=/usr/local/gradle
+    export PATH=${GRADLE_HOME}/bin:${PATH}
+fi
+
+#Java
+
+
+if [ "$(uname)" == "Darwin" ]; then
+    export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+    export JDK_HOME=${JAVA_HOME}
+    export JAVACMD="$JAVA_HOME/bin/java"
+    export PATH=${JAVA_HOME}/bin:$PATH
+else
+	if [ -d /usr/local/java8 ]; then
+		unset CLASSPATH; export CLASSPATH
+		unset JAVA_HOME; export JAVA_HOME
+
+		export JAVA_HOME="/usr/local/java8"
+		export JDK_HOME=${JAVA_HOME}
+		export JAVACMD="$JAVA_HOME/bin/java"
+		export PATH=${JAVA_HOME}/bin:$PATH
+	fi
+fi
+
+
+# Home bin
+export PATH="${PATH}:${HOME}/bin"
+# echo "Set PATH=${PATH}"
+if [ -x /usr/share/source-highlight/src-hilite-lesspipe.sh ]; then
+    export LESSOPEN="| /usr/share/source-highlight/src-hilite-lesspipe.sh %s"
+fi
+
+export LESS=' -R '
+
+

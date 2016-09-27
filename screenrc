@@ -1,0 +1,40 @@
+nethack             on
+autodetach          on
+hardcopy_append     on
+vbell               off
+startup_message     off
+silencewait         15
+defscrollback       100000
+shell               bash
+#termcapinfo         linux "ve=\E[?25h\E[?17;0;64c"
+termcapinfo         xterm* ti@:te@
+defutf8             on
+altscreen           on
+
+sorendition rw
+hardstatus alwayslastline "%{rk} %H %{wb} %w %{= dd}  %= %{kw} %d.%m.%Y %c "
+
+pow_detach_msg        "BYE"
+activity              "Master! Trouble in %n (%t) [%w:%s]~"
+bell_msg              "Master, Bell in %n!!!!"
+vbell_msg             "   Bell  ----  Bell!!  "
+
+
+# statup
+screen -t BASH2        2     bash -
+screen -t BASH1        1     bash -
+screen -t BASH0        0     bash -
+
+# bindings
+#bindkey ^f screen ssh server
+
+bind B screen -t 'BASH' bash
+bindkey [29~ windowlist -b
+bindkey "^[[5;2~" eval "copy" "stuff ^u"
+bindkey -m "^[[5;2~" stuff ^u
+bindkey -m "^[[6;2~" stuff ^d   
+
+
+
+
+

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+echo "Loading completion"
+
+if [ -f /usr/share/bash-completion/bash_completion ]; then
+	. /usr/share/bash-completion/bash_completion
+elif [ -f /etc/bash_completion ]; then
+	. /etc/bash_completion
+fi
+
+if [ -f /etc/profile.d/bash-completion.sh ]; then
+    source /etc/profile.d/bash-completion.sh
+fi
+
+complete -C complete-ant-cmd.pl ant build.sh
+
+function make-completion-wrapper () {
+    local function_name="$2"
+    local arg_count=$(($#-3))
+    local comp_function_name="$1"
+    shift 2
+    local function="
+function $function_name {
+    ((COMP_CWORD+=$arg_count))
+    COMP_WORDS=( "$@" \${COMP_WORDS[@]:1} )
+    "$comp_function_name"
+    return 0
+}"
+    eval "$function"
+}
+
+complete -cf sudo
+
+make-completion-wrapper _apt_get _agi apt-get install
+complete -o bashdefault -o default -o nospace -F _agi agi
+
+make-completion-wrapper _apt_get _agu apt-get update
+complete -o bashdefault -o default -o nospace -F _agu agu
+
+make-completion-wrapper _apt_get _ari apt-get install
+complete -o bashdefault -o default -o nospace -F _ari ari
+
+make-completion-wrapper _apt_get _agr apt-get remove
+complete -o bashdefault -o default -o nospace -F _agr agr
+
+make-completion-wrapper _apt_get _agp apt-get purge
+complete -o bashdefault -o default -o nospace -F _agp agp
+
+make-completion-wrapper _apt_get _acs apt-cache search
+complete -o bashdefault -o default -o nospace -F _acs acs
+
+make-completion-wrapper _apt_get _ash apt-cache show
+complete -o bashdefault -o default -o nospace -F _ash ash

@@ -1,0 +1,12 @@
+.settings
+.springBeans
+.springWebflow
+.classpath
+.project
+*.iml
+.externalToolBuilders
+target
+bin
+catalina.base_IS_UNDEFINED
+diagnostic.log
+
