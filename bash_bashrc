@@ -6,7 +6,8 @@ case $- in
       *) return;;
 esac
 
-BASH_DIR="${HOME}/dotfiles"
+BASH_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc   # --> Read /etc/bashrc, if present.
 fi
@@ -21,8 +22,9 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 if which tput > /dev/null 2>&1 && [[ $(tput -T$TERM colors) -ge 8 ]]; then
-    if  [[ "$(hostname)" =~ "-server" ]]; then
-	     export PS1='\n\[\e[1;31m\]\w\[\e[0;0m\]\n\[\e[1;34m\]\u@\h\[\e[0;0m\] \$ '
+    #if  [[ "$(hostname)" =~ "-server" ]]; then
+    if [ "$(id -u)" == "0" ]; then
+	     export PS1='\n\[\e[1;34m\]\w\[\e[0;0m\]\n\[\e[1;31m\]\u@\h\[\e[0;0m\] \$ '
     else
 	     export PS1='\n\[\e[1;34m\]\w\[\e[0;0m\]\n\[\e[01;32m\]\u@\h\[\e[0;0m\] \$ '
    fi
