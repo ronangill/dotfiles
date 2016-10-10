@@ -125,7 +125,7 @@ drun (){
     exit 1
   fi
 
-  DOCKER_TAG="docker.gillsoft.org/$(basename ${PWD})"
+  DOCKER_TAG="$(docker images | grep latest | grep $(basename $(pwd)) | awk '{print $1}')"
 
   docker run  -t -i "$@" "${DOCKER_TAG}"
 
