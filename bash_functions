@@ -86,6 +86,10 @@ fngrep (){
   find . -iname $1 -exec grep -iH '{}' $2;
 }
 
+dgettag (){
+  echo "$(basename $(dirname $(pwd)))/$(basename $(pwd))"
+}
+
 dbuild (){
 
   if [ ! -e Dockerfile ]; then
@@ -98,10 +102,13 @@ dbuild (){
     OPTS="--no-cache=true --force-rm=true"
   fi
 
-  DOCKER_TAG="docker.gillsoft.org/$(basename ${PWD})"
+  DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
 
   echo "Building ${DOCKER_TAG}"
   docker build ${OPTS} -t "${DOCKER_TAG}" .
+  if [  $? -eq 0  ] ; then
+    echo "Built ${DOCKER_TAG}"
+  fi
 
 }
 
@@ -112,7 +119,7 @@ dpush (){
     exit 1
   fi
 
-  DOCKER_TAG="docker.gillsoft.org/$(basename ${PWD})"
+  DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
 
   docker push "${DOCKER_TAG}"
 
@@ -125,9 +132,22 @@ drun (){
     exit 1
   fi
 
-  DOCKER_TAG="$(docker images | grep latest | grep $(basename $(pwd)) | awk '{print $1}')"
+  DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
 
   docker run  -t -i "$@" "${DOCKER_TAG}"
+
+}
+
+drunbash (){
+
+  if [ ! -e Dockerfile ]; then
+    echo "Dockerfile not found - nothing to run"
+    exit 1
+  fi
+
+  DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
+
+  docker run  -t -i "$@" "${DOCKER_TAG}" /bin/bash
 
 }
 
