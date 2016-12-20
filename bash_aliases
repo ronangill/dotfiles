@@ -63,9 +63,8 @@ alias psi='ps h -eo pmem,comm | sort -nr | head'
 alias pg='ps -efww | grep -v grep | grep -i '
 alias pj='ps -efww | grep -v grep | grep java'
 
-alias mp='rm .project .classpath .settings -rf; mvn -U eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true'
-
 # Maven releases'
+alias mp='rm .project .classpath .settings -rf; mvn -U eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true'
 alias mbuild='mvn clean; mvn compile'
 alias mprepare='mvn release:clean release:prepare -DscmCommentPrefix='\''[nojira] - RELEASE 1.0.x -'\'''
 alias mrelease='mvn release:perform  -DscmCommentPrefix='\''[nojira] - RELEASE 1.0.x -'\'''
