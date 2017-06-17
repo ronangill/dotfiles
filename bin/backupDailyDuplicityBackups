@@ -1,0 +1,13 @@
+#!/bin/bash
+
+PERIOD="daily"
+MODE="duplicity"
+SRC="/"
+DEST="rsync://diskstation//volume1/Backups/$(hostname -s)-${MODE}-${PERIOD}-BACKUPS"
+
+echo "daily backup: Backing up [${SOURCE}] to [${DEST}]"
+duplicity --no-encryption --full-if-older-than 7D  \
+          --include  /data/backups \
+          --exclude  '**'  \
+          ${SRC} ${DEST}
+duplicity remove-all-but-n-full 6 --force ${DEST}

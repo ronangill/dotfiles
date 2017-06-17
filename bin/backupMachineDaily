@@ -1,0 +1,18 @@
+#!/bin/bash
+
+CONF="/etc/backup/rdiff-backup-daily.conf"
+TMPDIR="/data/tmp/"
+SRC="/"
+DEST="/data/mnt/diskstation/backups/$(hostname -s)-rdiff-daily"
+
+echo "$0 - $(date +"%F %T") daily backup started"
+
+rdiff-backup -b --no-compression -v3 --print-statistics \
+	--tempdir "${TMPDIR}" \
+	--exclude-special-files \
+	--include-globbing-filelist "${CONF}" \
+	"${SRC}" "${DEST}"
+
+rdiff-backup --force --remove-older-than 2W "${DEST}"
+
+echo "$0 - $(date +"%F %T") daily backup finished"

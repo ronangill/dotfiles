@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for p in $(find $(pwd) -maxdepth 5 -name pom.xml | sort); do
+    d="$(dirname $p)";
+    CWD="$(pwd)";
+    cd $d;
+    echo "Cleaning $(pwd)"
+    rm .project .classpath .settings .externalToolBuilders target bin catalina.base_IS_UNDEFINED diagnostic.log -rf 
+done

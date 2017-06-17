@@ -11,8 +11,10 @@ echo "Setting up symlinks to ${DF_PATH}"
 echo "Old files backed up to ${BAK_PATH}"
 
 [ -e ${HOME}/.bashrc ] && mv ${VERBOSE} ${HOME}/.bashrc "${BAK_PATH}"
-ln ${VERBOSE} -s "${DF_PATH}/bash_bashrc" ${HOME}/.bashrc
+ln ${VERBOSE} -s "${DF_PATH}/bash_bashrc" "${HOME}/.bashrc"
 [ -e ${HOME}/.screenrc ] && mv ${VERBOSE} ${HOME}/.screenrc "${BAK_PATH}"
-ln ${VERBOSE} -s "${DF_PATH}/screenrc" ${HOME}/.screenrc
+ln ${VERBOSE} -s "${DF_PATH}/screenrc" "${HOME}/.screenrc"
 [ -e ${HOME}/.vimrc ] && mv ${VERBOSE} ${HOME}/.vimrc "${BAK_PATH}"
-ln ${VERBOSE} -s "${DF_PATH}/vimrc" ${HOME}/.vimrc
+ln ${VERBOSE} -s "${DF_PATH}/vimrc" "${HOME}/.vimrc"
+
+ln ${VERBOSE} -s "${DF_PATH}/bin"  "${HOME}/bin"

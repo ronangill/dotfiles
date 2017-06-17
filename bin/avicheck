@@ -1,0 +1,28 @@
+#!/bin/bash
+
+FILENAME="$1"
+EXT="${FILENAME##*.}"
+FFMPEG=`ffmpeg -i $FILENAME -an -vn 2>&1`
+MPLAYER=`mplayer -identify $FILENAME -ao null -vo null -frames 0 2>/dev/null` 
+BR=`expr "$FFMPEG" : '.*bitrate:\s\([^ ]*\).*'` 
+AUDIO=`echo "$FFMPEG" | grep 'Audio' | cut -d ':' -f3`
+VIDEO=`echo "$FFMPEG" | grep 'Video' | cut -d ':' -f3`
+MVIDEO=`echo "$MPLAYER" | grep 'VIDEO: ' | cut -d ':' -f2`        
+read ISOTYPE <<< `echo "$MPLAYER" | grep 'ISO: File Type Major Brand:' | cut -d ':' -f3`    
+read ACODEC <<< `echo "$AUDIO" | cut -d ',' -f 1`
+read VCODEC <<< `echo "$VIDEO" | cut -d ',' -f 1`
+RES=`expr "$MVIDEO" : '.*\(...x...\).*'` 
+read FPS <<< `echo "$MVIDEO" | grep -o "\<[0-9.]*\> fps" | cut -d ' ' -f1`  
+read BPP <<< `echo "$MVIDEO" | grep -o '\<[^ ]*bpp\>'`
+read ACH <<< `echo "$MPLAYER" | grep "ID_AUDIO_NCH" | sort -u | cut -d '=' -f2`
+read ASRATE <<< `echo "$MPLAYER" | grep "ID_AUDIO_RATE" | sort -u | cut -d '=' -f2`
+read ABRATE <<< `echo "$MPLAYER" | grep "ID_AUDIO_BITRATE" | sort -u | cut -d '=' -f2`                                                                
+
+
+#echo "[$MVIDEO]"
+echo "$FILENAME, $EXT, $RES, $BR, $VCODEC, $ISOTYPE, $FPS, $BPP, $ACODEC, $ACH, $ASRATE, $ABRATE"
+#echo "$BR $VCODEC $ISOTYPE $FPS $BPP $ACODEC $ACH $ARATE"
+
+
+
+

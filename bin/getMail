@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "$0 - $(date +"%F %T") Backup started"
+
+for f in ~/.getmail/*.getmail; do
+  echo "$0 - $(date +"%F %T") getnail for $f"
+  /usr/bin/getmail -q -r "$f"
+done
+
+echo "$0 - $(date +"%F %T") Backup finished"

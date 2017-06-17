@@ -1,0 +1,42 @@
+#!/bin/bash
+echo $(pwd)
+
+if [[ -z "$1" ]]; then
+    WD="$(pwd)/";
+else
+    WD="$(pwd)/$1"
+fi;
+
+if [[ ! -z "$2" ]]; then
+    PREFIX="$2";
+fi;
+
+DOWNLOAD_ALL="true"
+
+for p in $(find ${WD}/* -maxdepth 5 -name pom.xml | sort); do
+    d="$(dirname $p)";
+    CWD="$(pwd)";
+    cd $d;
+    branch="$(echo $d | sed 's/^.*_\([0-9.]*[0-9]\).*$/\1/')";
+    
+    if [[ ! -z "$PREFIX" ]]; then
+        nametemplate="$PREFIX [artifactId]";
+    else
+        if [ -n "$branch" -a "$d" != "$branch" ]; then
+            nametemplate="$branch [artifactId]";
+        else
+            nametemplate="trunk [artifactId]";
+        fi
+    fi
+    
+    echo ""
+    echo "Building project for $d"
+    echo ""
+    
+    rm .project .classpath .settings target bin -rf;
+
+    mvn -N eclipse:eclipse compile \
+        -DdownloadSources=${DOWNLOAD_ALL} \
+        -DdownloadJavadocs=${DOWNLOAD_ALL} \
+        -Declipse.projectNameTemplate="$nametemplate";
+done
