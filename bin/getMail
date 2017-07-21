@@ -1,10 +1,10 @@
 #!/bin/bash
+LOG_DIR="/var/log/getmail"
+echo "$0 - $(date +"%F %T") Backup started" >> "${LOG_DIR}/getmail-cron.log" 2>&1
 
-echo "$0 - $(date +"%F %T") Backup started"
-
-for f in ~/.getmail/*.getmail; do
-  echo "$0 - $(date +"%F %T") getnail for $f"
-  /usr/bin/getmail -q -r "$f"
+for f in /home/rgill/.getmail/*.getmail; do
+  echo "$0 - $(date +"%F %T") getmail for $f" >> "${LOG_DIR}/getmail-cron.log" 2>&1
+  /usr/bin/getmail -q -r "$f"  >> "${LOG_DIR}/getmail-cron.log" 2>&1
 done
 
-echo "$0 - $(date +"%F %T") Backup finished"
+echo "$0 - $(date +"%F %T") Backup finished" >> "${LOG_DIR}/getmail-cron.log" 2>&1
