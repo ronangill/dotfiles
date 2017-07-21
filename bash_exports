@@ -13,24 +13,8 @@ fi
 # Maven
 if [ -d /usr/local/apache-maven ]; then
     export MVN_HOME=/usr/local/apache-maven
-    export MAVEN_OPTS="-client  -Xmx4g -Xms512m -XX:MaxPermSize=1g -Dmaven.test.failure.ignore=false"
+    export MAVEN_OPTS="-client  -Xmx4g -Xms512m -Dmaven.test.failure.ignore=false"
     export PATH=${MVN_HOME}/bin:${PATH}
-fi
-
-#JBoss
-if [ -d /usr/local/jboss ]; then
-    export JBOSS_HOME=/usr/local/jboss
-    export PATH=$PATH:$JBOSS_HOME/bin
-fi
-
-# JRuby
-if [ -d /usr/local/jruby ]; then
-    export PATH=/usr/local/jruby/bin:${PATH}
-fi
-
-# Jython
-if [ -d /usr/local/jython ]; then
-    export PATH=/usr/local/jython/bin/:${PATH}
 fi
 
 #Gradle
@@ -40,8 +24,6 @@ if [ -d /usr/local/gradle ]; then
 fi
 
 #Java
-
-
 if [ "$(uname)" == "Darwin" ]; then
     export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
     export JDK_HOME=${JAVA_HOME}
@@ -68,5 +50,3 @@ if [ -x /usr/share/source-highlight/src-hilite-lesspipe.sh ]; then
 fi
 
 export LESS=' -R '
-
-
