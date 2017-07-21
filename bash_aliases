@@ -72,3 +72,7 @@ alias mtest='mvn release:clean release:prepare -DdryRun=true -DscmCommentPrefix=
 
 # Docker
 alias dps='docker ps --format "table{{.Names}}\t{{.ID}}\t{{.Image}}\t{{.Command}}"'
+
+# git
+# status of all fodlers
+alias gitas='find . -type d -name .git | while read dir ; do sh -c "cd $dir/../ && echo -e \"\nGIT STATUS IN ${dir//\.git/}\" && git status -s" ; done'
