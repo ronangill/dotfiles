@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# redirect normal output to a logfile
+LOGFILE="/var/log/backup.log"
+exec >> $LOGFILE
+
 CONF="/etc/backup/rdiff-backup-daily.conf"
 TMPDIR="/data/tmp/"
 SRC="/"
@@ -7,7 +11,7 @@ DEST="/data/mnt/diskstation/backups/$(hostname -s)-rdiff-daily"
 
 echo "$0 - $(date +"%F %T") daily backup started"
 
-rdiff-backup -b --no-compression -v3 --print-statistics \
+rdiff-backup -b --no-compression -v3 \
 	--tempdir "${TMPDIR}" \
 	--exclude-special-files \
 	--include-globbing-filelist "${CONF}" \
