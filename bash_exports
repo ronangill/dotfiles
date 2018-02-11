@@ -1,7 +1,8 @@
 #!/bin/bash
 echo "Loading exports"
 
-export EDITOR=vim
+export VISUAL=vim
+export EDITOR="$VISUAL"
 
 #Ant
 

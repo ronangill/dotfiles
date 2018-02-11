@@ -5,14 +5,15 @@ echo "Loading functions"
 list () {
   if [ -f "$1" ] ; then
     case "$1" in
-      *.tar.bz2)   tar tjf "$1"        ;;
-      *.tar.gz)    tar tzf "$1"     ;;
+      *.tar.bz2)   tar tf "$1"        ;;
+      *.tar.gz)    tar tf "$1"     ;;
+      *.tar.xz)    tar tf "$1"     ;;
       *.bz2)       bunzip2 -t "$1"       ;;
       *.rar)       rar l "$1"     ;;
       *.gz)        gunzip "$1"     ;;
       *.tar)       tar tf "$1"        ;;
-      *.tbz2)      tar tjf "$1"      ;;
-      *.tgz)       tar tzf "$1"       ;;
+      *.tbz2)      tar tf "$1"      ;;
+      *.tgz)       tar tf "$1"       ;;
       *.war)       unzip -l "$1"     ;;
       *.zip)       unzip -l "$1"     ;;
       *.Z)         uncompress -l "$1"  ;;
@@ -29,14 +30,15 @@ list () {
 extract () {
   if [ -f "$1" ] ; then
     case "$1" in
-      *.tar.bz2)   tar xjf "$1"        ;;
-      *.tar.gz)    tar xzf "$1"     ;;
+      *.tar.bz2)   tar xf "$1"        ;;
+      *.tar.gz)    tar xf "$1"     ;;
+      *.tar.xz)    tar xf "$1"     ;;
       *.bz2)       bunzip2 "$1"       ;;
       *.rar)       rar x "$1"     ;;
       *.gz)        gunzip "$1"     ;;
       *.tar)       tar xf "$1"        ;;
-      *.tbz2)      tar xjf "$1"      ;;
-      *.tgz)       tar xzf "$1"       ;;
+      *.tbz2)      tar xf "$1"      ;;
+      *.tgz)       tar xf "$1"       ;;
       *.war)       unzip "$1"     ;;
       *.zip)       unzip "$1"     ;;
       *.Z)         uncompress "$1"  ;;
@@ -99,7 +101,7 @@ dbuild (){
 
   # add paramter "--full" to get a clean build
   if [ "--fulls" == "$1s" ]; then
-    OPTS="--no-cache=true --force-rm=true"
+    OPTS="--compress --no-cache=true --force-rm=true"
   fi
 
   DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
@@ -122,6 +124,7 @@ dpush (){
   DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
 
   docker push "${DOCKER_TAG}"
+  docker push "${DOCKER_TAG}:latest"
 
 }
 

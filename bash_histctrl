@@ -4,7 +4,7 @@ echo "Loading histctrl"
 
 # append to the history file, don't overwrite it
 shopt -s histappend
-shopt -s cmdhist  
+shopt -s cmdhist
 shopt -s cdspell
 
 history() {
@@ -23,10 +23,9 @@ export HISTCONTROL=ignorespace:ignoredups
 export HISTFILESIZE=1000000000
 export HISTSIZE=1000000000
 export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S - '
+export HISTIGNORE="mpv *"
 if [ "$(uname)" != "Darwin" ]; then
     export HISTFILE=${HOME}/.bash_h_keep
 fi
 
 export PROMPT_COMMAND=_bash_history_sync
-
-

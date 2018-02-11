@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# redirect normal output to a logfile
+LOGFILE="/var/log/backup.log"
+exec >> $LOGFILE
+
+echo "$0 - $(date +"%F %T")  started"
+
+COMPANY_PATH="/data/company"
+
+source /etc/backup/s3config
+
+SOURCE="/data/backups/personal/"
+if [ -e "${SOURCE}" ]
+then
+	DEST="s3+http://backups.company.personal"
+	echo "$0 - $(date +"%F %T") Backing up [${SOURCE}] to [${DEST}]"
+	duplicity --allow-source-mismatch --full-if-older-than 21D --encrypt-key=${GPG_KEY} --sign-key=${GPG_KEY} --gpg-option="--no-permission-warning"  ${SOURCE} ${DEST}
+	duplicity --allow-source-mismatch --gpg-option="--no-permission-warning" remove-all-but-n-full 6 --force ${DEST}
+fi
+
+echo "$0 - $(date +"%F %T") finished"
+
+unset AWS_ACCESS_KEY_ID
+unset AWS_SECRET_ACCESS_KEY
+unset GPG_KEY
+unset PASSPHRASE

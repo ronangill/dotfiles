@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# redirect normal output to a logfile
+LOGFILE="/var/log/backup.log"
+exec >> $LOGFILE
+
+source /etc/backup/s3config
+
+echo "$0 - $(date +"%F %T") started"
+
+source /etc/backup/s3config
+
+SOURCE="/data/backups/"
+if [ -e "${SOURCE}" ]
+then
+  DEST="s3://s3.eu-west-2.amazonaws.com/backups.company.backups"
+
+	echo "$0 - $(date +"%F %T")  Backing up [${SOURCE}] to [${DEST}]"
+  OPTS=" --encrypt-key=${GPG_KEY}"
+  OPTS="${OPTS} --sign-key=${GPG_KEY}"
+  #OPTS="${OPTS} --s3-use-new-style --s3-european-buckets"
+
+	duplicity --allow-source-mismatch --full-if-older-than 7M --volsize 250 \
+      ${OPTS} \
+      --exclude "${SOURCE}pictures" \
+      "${SOURCE}" "${DEST}"
+
+  echo "$0 - $(date +"%F %T")  Removing all but last 2 full backusp in [${DEST}]"
+	duplicity --allow-source-mismatch remove-all-but-n-full 2 \
+            ${OPTS} \
+            --force \
+            "${DEST}"
+
+fi
+
+echo "$0 - $(date +"%F %T") finished"
+
+unset AWS_ACCESS_KEY_ID
+unset AWS_SECRET_ACCESS_KEY
+unset GPG_KEY
+unset PASSPHRASE
