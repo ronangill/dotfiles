@@ -176,3 +176,28 @@ denter (){
 dip() {
   boot2docker ip 2> /dev/null
 }
+
+vbip(){
+  for vm in $(VBoxManage list runningvms | awk -F '"' '{print $2}'); do 
+    echo "VM: $vm, IP: $(\
+      VBoxManage guestproperty enumerate $vm | \
+      grep "V4/IP"| \
+      grep 192 | \
+      cut -f2 -d, | \
+      cut -f2 -d: \
+      )"; 
+  done
+}
+
+vbls(){
+  VBoxManage list vms
+}
+
+vbup(){
+  if [ -z "$1" ]; then
+    echo "No virtualbox name supplied"
+    exit 1
+  fi
+  
+  VBoxManage startvm "$1"  --type headless
+}

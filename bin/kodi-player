@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]
+  then
+    echo "No video path supplied"
+    exit 1
+fi
+
+if [ $# -gt 1 ]
+  then
+    echo "More than one video path supplied (maybe wrap the path in quotes)"
+    exit 1
+fi
+
+video="$1"
+
+for mount in $(mount | grep nfs | awk '{print $1}'); do
+  mountPath="${mount//:/}" # get the nfs path from teh mount
+  if echo "$video" | grep -q "$mountPath" ; then # see if the video contains the nfs path
+    nfsPath="nfs://${mountPath}"
+    filePath="$(mount | grep ${mount} | awk '{print $3}')"
+    actualPath="${video/${nfsPath}/${filePath}}"
+    echo "Playing $actualPath"
+    mpv "${actualPath}"
+  fi
+done

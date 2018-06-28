@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# load a list of virtual box VMs and ensure they are running
+
+if [ -e "${HOME}/.auto-virtualbox.conf" ]
+then
+    for vm in $(cat ${HOME}/.auto-virtualbox.conf); do
+        echo testing $vm
+        # not null if running
+        if [ -z "$(VBoxManage list runningvms | grep "\"$vm\" ")" ]
+        then
+            echo "Staring VM $vm"
+            VBoxManage startvm "$vm" --type headless
+        fi
+    done
+fi

@@ -31,15 +31,25 @@ if [ "$(uname)" == "Darwin" ]; then
     export JAVACMD="$JAVA_HOME/bin/java"
     export PATH=${JAVA_HOME}/bin:$PATH
 else
-	if [ -d /usr/local/java8 ]; then
-		unset CLASSPATH; export CLASSPATH
-		unset JAVA_HOME; export JAVA_HOME
+#    if [ -d /usr/local/java9 ]; then
+#		unset CLASSPATH; export CLASSPATH
+#		unset JAVA_HOME; export JAVA_HOME
+#
+#		export JAVA_HOME="/usr/local/java9"
+#		export JDK_HOME=${JAVA_HOME}
+#		export JAVACMD="$JAVA_HOME/bin/java"
+#		export PATH=${JAVA_HOME}/bin:$PATH
+#    else
+	    if [ -d /usr/local/java8 ]; then
+		    unset CLASSPATH; export CLASSPATH
+		    unset JAVA_HOME; export JAVA_HOME
 
-		export JAVA_HOME="/usr/local/java8"
-		export JDK_HOME=${JAVA_HOME}
-		export JAVACMD="$JAVA_HOME/bin/java"
-		export PATH=${JAVA_HOME}/bin:$PATH
-	fi
+		    export JAVA_HOME="/usr/local/java8"
+		    export JDK_HOME=${JAVA_HOME}
+		    export JAVACMD="$JAVA_HOME/bin/java"
+		    export PATH=${JAVA_HOME}/bin:$PATH
+	    fi
+#	fi
 fi
 
 
