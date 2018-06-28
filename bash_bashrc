@@ -26,13 +26,17 @@ if which tput > /dev/null 2>&1 && [[ $(tput -T$TERM colors) -ge 8 ]]; then
     if [ "$(id -u)" == "0" ]; then
 	     export PS1='\n\[\e[1;34m\]\w\[\e[0;0m\]\n\[\e[1;31m\]\u@\h\[\e[0;0m\] \$ '
     else
-	     export PS1='\n\[\e[1;34m\]\w\[\e[0;0m\]\n\[\e[01;32m\]\u@\h\[\e[0;0m\] \$ '
+	     export PS1="\n\[\e[1;34m\]\w \[\033[36m\]\$(parse_git_branch)\[\e[0;0m\]\n\[\e[01;32m\]\u@\h\[\e[0;0m\] \$ "
    fi
 else
     export PS1='\n\w\n\u@\h \$ '
 fi
 
 echo "Loading bashrc"
+
+if [ -f ${HOME}/.bash_custom ]; then
+    . ${HOME}/.bash_custom
+fi
 
 if [ -f ${BASH_DIR}/bash_histctrl ]; then
     . ${BASH_DIR}/bash_histctrl
@@ -53,6 +57,7 @@ fi
 if [ -f ${BASH_DIR}/bash_functions ]; then
     . ${BASH_DIR}/bash_functions
 fi
+
 
 test -r $HOME/.dircolors  && eval $( dircolors -b $HOME/.dircolors )
 

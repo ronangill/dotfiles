@@ -104,6 +104,11 @@ dbuild (){
     OPTS="--compress --no-cache=true --force-rm=true"
   fi
 
+  if [  ! -z "${http_proxy}" ]; then
+    OPTS="${OPTS} --build-arg https_proxy=${http_proxy} --build-arg http_proxy=${http_proxy}"
+    OPTS="${OPTS} --build-arg HTTP_PROXY=${http_proxy} --build-arg HTTPS_PROXY=${http_proxy}"
+  fi
+
   DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
 
   echo "Building ${DOCKER_TAG}"
@@ -200,4 +205,8 @@ vbup(){
   fi
   
   VBoxManage startvm "$1"  --type headless
+}
+
+parse_git_branch () {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
