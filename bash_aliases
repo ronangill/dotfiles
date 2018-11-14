@@ -1,4 +1,3 @@
-#!/bin/bash
 echo "Loading aliases"
 
 COLORS=""
@@ -11,9 +10,11 @@ alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
 alias ll="ls -l -h ${COLORS}"
-if [ "$(uname)" == "Darwin" ]; then
+
+if [ "$(uname 2> /dev/null)" = "Darwin" ]; then
     alias ll='ls -G -l -h'
 fi
+
 alias grep="grep -i ${COLORS}"
 alias ln="ln -s"
 alias hs="history"

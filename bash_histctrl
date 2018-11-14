@@ -1,31 +1,55 @@
-#!/bin/bash
-
 echo "Loading histctrl"
 
 # append to the history file, don't overwrite it
-shopt -s histappend
-shopt -s cmdhist
-shopt -s cdspell
 
-history() {
-  _bash_history_sync
-  builtin history "$@"
-}
+if [ -z "$BASH_VERSION" ] ; then
+  echo "Setting history optons for ZSH"
+  setopt APPEND_HISTORY
+  setopt extended_history
+  setopt hist_ignore_space
+  setopt inc_append_history
+  setopt share_history 
 
-_bash_history_sync() {
-  builtin history -a         #1
-  #HISTFILESIZE=$HISTSIZE     #2
-  builtin history -c         #3
-  builtin history -r         #4
-}
+  if [ "$(uname)" != "Darwin" ]; then
+      export HISTFILE=${HOME}/.zsh_history
+  fi
 
-export HISTCONTROL=ignorespace:ignoredups
-export HISTFILESIZE=1000000000
-export HISTSIZE=1000000000
-export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S - '
-export HISTIGNORE="mpv *"
-if [ "$(uname)" != "Darwin" ]; then
-    export HISTFILE=${HOME}/.bash_h_keep
+  export HISTORY_IGNORE="mpv *"
+
+else
+  echo "Setting history optons for BASH"
+  shopt -s histappend
+  shopt -s cmdhist
+  shopt -s cdspell
+
+  function history() {
+    _bash_history_sync
+    builtin history "$@"
+  }
+
+  function _bash_history_sync() {
+    builtin history -a         #1
+    #HISTFILESIZE=$HISTSIZE     #2
+    builtin history -c         #3
+    builtin history -r         #4
+  }
+
+  if [ "$(uname)" != "Darwin" ]; then
+      export HISTFILE=${HOME}/.bash_h_keep
+  fi
+
+  export HISTCONTROL=ignorespace:ignoredups
+  export HISTIGNORE="mpv *"
+  export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S - '
+  export PROMPT_COMMAND=_bash_history_sync
+
 fi
 
-export PROMPT_COMMAND=_bash_history_sync
+
+export HISTFILESIZE=1000000000
+export HISTSIZE=1000000000
+
+
+
+
+
