@@ -30,26 +30,15 @@ if [ "$(uname)" = "Darwin" ]; then
     export JDK_HOME=${JAVA_HOME}
     export JAVACMD="$JAVA_HOME/bin/java"
     export PATH=${JAVA_HOME}/bin:$PATH
-else
-#    if [ -d /usr/local/java9 ]; then
-#		unset CLASSPATH; export CLASSPATH
-#		unset JAVA_HOME; export JAVA_HOME
-#
-#		export JAVA_HOME="/usr/local/java9"
-#		export JDK_HOME=${JAVA_HOME}
-#		export JAVACMD="$JAVA_HOME/bin/java"
-#		export PATH=${JAVA_HOME}/bin:$PATH
-#    else
-	    if [ -d /usr/local/java8 ]; then
-		    unset CLASSPATH; export CLASSPATH
-		    unset JAVA_HOME; export JAVA_HOME
+elif [ -d /usr/local/java ]; then
+    unset CLASSPATH; export CLASSPATH
+    unset JAVA_HOME; export JAVA_HOME
+    unset JDK_HOME; export JDK_HOME
 
-		    export JAVA_HOME="/usr/local/java8"
-		    export JDK_HOME=${JAVA_HOME}
-		    export JAVACMD="$JAVA_HOME/bin/java"
-		    export PATH=${JAVA_HOME}/bin:$PATH
-	    fi
-#	fi
+    export JAVA_HOME="/usr/local/java"
+    export JDK_HOME=${JAVA_HOME}
+    export JAVACMD="$JAVA_HOME/bin/java"
+    export PATH=${JAVA_HOME}/bin:$PATH
 fi
 
 
@@ -61,3 +50,6 @@ if [ -x /usr/share/source-highlight/src-hilite-lesspipe.sh ]; then
 fi
 
 export LESS=' -R '
+
+## clean up the PATH
+export PATH="$(printf "%s" "${PATH}" | /usr/bin/awk -v RS=: -v ORS=: '!($0 in a) {a[$0]; print}')"
