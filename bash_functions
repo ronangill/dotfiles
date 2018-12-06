@@ -74,11 +74,11 @@ archive () {
 
 used (){
   if [ -z $1 ]; then
-    path="* .[a-zA-Z0-9_]*"
+    dfpath="* .[a-zA-Z0-9_]*"
   else
-    path="$1/* $1/.[a-zA-Z0-9_]*"
+    dfpath="$1/* $1/.[a-zA-Z0-9_]*"
   fi
-  du -xsk $path  | \
+  du -xsk $dfpath  | \
   sort -n | \
   awk '{s=$1; $1="";printf "%8.1f MB %8.1f GB %s \n", s/1024, s/1024/1024, $0}'
 
