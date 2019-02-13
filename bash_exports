@@ -41,6 +41,10 @@ elif [ -d /usr/local/java ]; then
     export PATH=${JAVA_HOME}/bin:$PATH
 fi
 
+# golang
+
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
 # Home bin
 export PATH="${PATH}:${HOME}/bin"
