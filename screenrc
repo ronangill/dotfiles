@@ -5,14 +5,14 @@ vbell               off
 startup_message     off
 silencewait         15
 defscrollback       100000
-shell               bash
+shell               zsh
 #termcapinfo         linux "ve=\E[?25h\E[?17;0;64c"
 termcapinfo         xterm* ti@:te@
 defutf8             on
 altscreen           on
 
 sorendition rw
-hardstatus alwayslastline "%{rk} %H %{wb} %w %{= dd}  %= %{kw} %d.%m.%Y %c "
+hardstatus alwayslastline "%{rk} %S -%{rk} %H %{wb} %w %{= dd}  %= %{kw} %d.%m.%Y %c "
 
 pow_detach_msg        "BYE"
 activity              "Master! Trouble in %n (%t) [%w:%s]~"
@@ -21,14 +21,14 @@ vbell_msg             "   Bell  ----  Bell!!  "
 
 
 # statup
-screen -t BASH2        2     bash -
-screen -t BASH1        1     bash -
-screen -t BASH0        0     bash -
+screen -t TAB2        2     zsh -
+screen -t TAB1        1     zsh -
+screen -t TAB0        0     zsh -
 
 # bindings
 #bindkey ^f screen ssh server
 
-bind B screen -t 'BASH' bash
+bind B screen -t 'ZSH' zsh
 bindkey [29~ windowlist -b
 bindkey "^[[5;2~" eval "copy" "stuff ^u"
 bindkey -m "^[[5;2~" stuff ^u
