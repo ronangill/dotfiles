@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # redirect normal output to a logfile
-LOGFILE="/var/log/backup.log"
-exec >> $LOGFILE
+#LOGFILE="/var/log/backup.log"
+#exec >> $LOGFILE
 
 echo "$0 - $(date +"%F %T")  started"
 
@@ -10,13 +10,25 @@ COMPANY_PATH="/data/company"
 
 source /etc/backup/s3config
 
-SOURCE="/data/backups/personal/"
+SOURCE="/data/backups/daily/"
+DEST="s3://s3.eu-west-2.amazonaws.com/gillsoft-daily-backups"
+#DEST="s3+http://gillsoft-backups/daily"
+DUP_OPTS="--verbosity 9 \
+		--archive-dir /data/tmp/duplicity/cache \
+		--s3-european-buckets \
+		--s3-use-new-style \
+		--allow-source-mismatch \
+		--encrypt-key=${GPG_KEY} \
+		--sign-key=${GPG_KEY}"
+
 if [ -e "${SOURCE}" ]
 then
-	DEST="s3+http://backups.company.personal"
 	echo "$0 - $(date +"%F %T") Backing up [${SOURCE}] to [${DEST}]"
-	duplicity --allow-source-mismatch --full-if-older-than 21D --encrypt-key=${GPG_KEY} --sign-key=${GPG_KEY} --gpg-option="--no-permission-warning"  ${SOURCE} ${DEST}
-	duplicity --allow-source-mismatch --gpg-option="--no-permission-warning" remove-all-but-n-full 6 --force ${DEST}
+
+	duplicity ${DUP_OPTS} \
+		--full-if-older-than 21D ${SOURCE} ${DEST}
+
+	duplicity ${DUP_OPTS} remove-all-but-n-full 6 --force ${DEST}
 fi
 
 echo "$0 - $(date +"%F %T") finished"

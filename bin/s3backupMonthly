@@ -8,28 +8,28 @@ source /etc/backup/s3config
 
 echo "$0 - $(date +"%F %T") started"
 
-source /etc/backup/s3config
+SOURCE="/data/backups/monthly/"
+DEST="s3://s3.eu-west-2.amazonaws.com/gillsoft-monthly-backups"
+DUP_OPTS="--verbosity 9 \
+		--archive-dir /data/tmp/duplicity/cache \
+		--s3-european-buckets \
+		--s3-use-new-style \
+		--allow-source-mismatch \
+		--encrypt-key=${GPG_KEY} \
+		--sign-key=${GPG_KEY}"
 
-SOURCE="/data/backups/"
 if [ -e "${SOURCE}" ]
 then
-  DEST="s3://s3.eu-west-2.amazonaws.com/backups.company.backups"
 
 	echo "$0 - $(date +"%F %T")  Backing up [${SOURCE}] to [${DEST}]"
-  OPTS=" --encrypt-key=${GPG_KEY}"
-  OPTS="${OPTS} --sign-key=${GPG_KEY}"
-  #OPTS="${OPTS} --s3-use-new-style --s3-european-buckets"
 
-	duplicity --allow-source-mismatch --full-if-older-than 7M --volsize 250 \
-      ${OPTS} \
-      --exclude "${SOURCE}pictures" \
-      "${SOURCE}" "${DEST}"
+	duplicity ${DUP_OPTS} \
+            --full-if-older-than 7M \
+            --volsize 250 \
+            ${SOURCE} ${DEST}
 
-  echo "$0 - $(date +"%F %T")  Removing all but last 2 full backusp in [${DEST}]"
-	duplicity --allow-source-mismatch remove-all-but-n-full 2 \
-            ${OPTS} \
-            --force \
-            "${DEST}"
+  echo "$0 - $(date +"%F %T")  Removing all but last 2 full backups in [${DEST}]"
+  duplicity ${DUP_OPTS} emove-all-but-n-full 2 --force ${DEST}
 
 fi
 
