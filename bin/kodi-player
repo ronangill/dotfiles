@@ -14,6 +14,9 @@ fi
 
 video="$1"
 
+#MPV="mpv"
+MPV="/home/rgill/src/mpv-build/mpv/build/mpv"
+
 for mount in $(mount | grep nfs | awk '{print $1}'); do
   mountPath="${mount//:/}" # get the nfs path from teh mount
   if echo "$video" | grep -q "$mountPath" ; then # see if the video contains the nfs path
@@ -21,6 +24,6 @@ for mount in $(mount | grep nfs | awk '{print $1}'); do
     filePath="$(mount | grep ${mount} | awk '{print $3}')"
     actualPath="${video/${nfsPath}/${filePath}}"
     echo "Playing $actualPath"
-    mpv "${actualPath}"
+    "${MPV}" "${actualPath}"
   fi
 done

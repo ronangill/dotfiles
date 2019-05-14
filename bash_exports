@@ -42,9 +42,9 @@ elif [ -d /usr/local/java ]; then
 fi
 
 # golang
-
+export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
-export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 # Home bin
 export PATH="${PATH}:${HOME}/bin"
@@ -56,5 +56,4 @@ fi
 export LESS=' -R '
 
 ## clean up the PATH
-export PATH="$(printf "%s" "${PATH}" | /usr/bin/awk -v RS=: -v ORS=: '!a[$0]++' | sed 's/::/:/' | sed 's/:$//')"
-echo "CURRENT PATH=${PATH}"
+export PATH="$(printf "%s" "${PATH}" | /usr/bin/awk -v RS=: -v ORS=: '!($0 in a) {a[$0]; print}')"

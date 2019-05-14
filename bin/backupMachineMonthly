@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# redirect normal output to a logfile
+#LOGFILE="/var/log/backup.log"
+#exec >> $LOGFILE
+
+BACKUP_PATH="/data/backups/monthly"
+
+echo "$0 - $(date +"%F %T") monthly backup of gmail archive"
+for f in /data/backups/getmail/*; do
+	echo tar -czf "${BACKUP_PATH}/$(basename ${f}).tar.gz" $f
+done
+
+echo "$0 - $(date +"%F %T") monthly backup finished"
