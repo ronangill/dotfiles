@@ -56,4 +56,5 @@ fi
 export LESS=' -R '
 
 ## clean up the PATH
-export PATH="$(printf "%s" "${PATH}" | /usr/bin/awk -v RS=: -v ORS=: '!($0 in a) {a[$0]; print}')"
+export PATH="$(printf "%s" "${PATH}" | /usr/bin/awk -v RS=: -v ORS=: '!a[$0]++' | sed 's/::/:/' | sed 's/:$//')"
+echo "CURRENT PATH=${PATH}"
