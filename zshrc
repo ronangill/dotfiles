@@ -68,7 +68,7 @@ DISABLE_AUTO_UPDATE="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git mvn colored-man-pages zsh-autosuggestions zsh-syntax-highlighting docker-compose yum wd
+  git colored-man-pages zsh-autosuggestions zsh-syntax-highlighting docker-compose yum wd
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -144,4 +144,6 @@ bindkey "${terminfo[kend]}" end-of-line
 bindkey "\e[1~" beginning-of-line
 bindkey "\e[4~" end-of-line
 
+setopt inc_append_history
+setopt share_hsitory
 

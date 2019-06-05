@@ -2,6 +2,11 @@
 
 echo "Loading functions"
 
+if [[ "${SHELL}" == "zsh" ]]; then
+  echo "setting word split option"
+  setopt shwordsplit
+fi
+
 ath_append ()  { path_remove $1; export PATH="$PATH:$1"; }
 path_prepend () { path_remove $1; export PATH="$1:$PATH"; }
 path_remove ()  { export PATH=`echo -n $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`; }
@@ -93,33 +98,34 @@ fngrep (){
 }
 
 dgettag (){
-  echo "$(basename $(dirname $(pwd)))/$(basename $(pwd))"
+  if [  ! -z "${DOCKER_TAG_BASE}" ]; then
+    echo "${DOCKER_TAG_BASE}/$(basename $(pwd))"
+  else
+    echo "$(basename $(dirname $(pwd)))/$(basename $(pwd))"
+  fi  
 }
 
 dbuild (){
-
-  F_OPTS=""
-
   if [ ! -e Dockerfile ]; then
     echo "Dockerfile not found - nothing to run"
-    exit 1
+    return 1
   fi
 
+  LOCAL_OPTS=""
   # add paramter "--full" to get a clean build
   if [ "--fulls" == "$1s" ]; then
-    F_OPTS="--compress --no-cache=true --force-rm=true"
+    LOCAL_OPTS="--compress --no-cache=true --force-rm=true"
   fi
 
   if [  ! -z "${http_proxy}" ]; then
-    F_OPTS="${F_OPTS} --build-arg https_proxy=${http_proxy} --build-arg http_proxy=${http_proxy}"
-    F_OPTS="${F_OPTS} --build-arg HTTP_PROXY=${http_proxy} --build-arg HTTPS_PROXY=${http_proxy}"
+    LOCAL_OPTS="${LOCAL_OPTS} --build-arg https_proxy=${http_proxy} --build-arg http_proxy=${http_proxy}"
+    LOCAL_OPTS="${LOCAL_OPTS} --build-arg HTTPS_PROXY=${http_proxy} --build-arg HTTP_PROXY=${http_proxy}"
   fi
 
-  DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
+  DOCKER_TAG="$(dgettag)"
 
   echo "Building ${DOCKER_TAG}"
-  echo "Running docker build ${F_OPTS} -t \"${DOCKER_TAG}\" ."
-  eval docker build ${F_OPTS} -t "${DOCKER_TAG}" .
+  docker build ${LOCAL_OPTS} -t "${DOCKER_TAG}" .
   if [  $? -eq 0  ] ; then
     echo "Built ${DOCKER_TAG}"
   fi
@@ -133,7 +139,7 @@ dpush (){
     exit 1
   fi
 
-  DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
+  DOCKER_TAG="$(dgettag)"
 
   docker push "${DOCKER_TAG}"
   docker push "${DOCKER_TAG}:latest"
@@ -147,7 +153,7 @@ drun (){
     exit 1
   fi
 
-  DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
+  DOCKER_TAG="$(dgettag)"
 
   docker run  -t -i "$@" "${DOCKER_TAG}"
 
