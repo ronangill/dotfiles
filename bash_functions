@@ -98,6 +98,8 @@ dgettag (){
 
 dbuild (){
 
+  F_OPTS=""
+
   if [ ! -e Dockerfile ]; then
     echo "Dockerfile not found - nothing to run"
     exit 1
@@ -105,18 +107,19 @@ dbuild (){
 
   # add paramter "--full" to get a clean build
   if [ "--fulls" == "$1s" ]; then
-    OPTS="--compress --no-cache=true --force-rm=true"
+    F_OPTS="--compress --no-cache=true --force-rm=true"
   fi
 
   if [  ! -z "${http_proxy}" ]; then
-    OPTS="${OPTS} --build-arg https_proxy=${http_proxy} --build-arg http_proxy=${http_proxy}"
-    OPTS="${OPTS} --build-arg HTTP_PROXY=${http_proxy} --build-arg HTTPS_PROXY=${http_proxy}"
+    F_OPTS="${F_OPTS} --build-arg https_proxy=${http_proxy} --build-arg http_proxy=${http_proxy}"
+    F_OPTS="${F_OPTS} --build-arg HTTP_PROXY=${http_proxy} --build-arg HTTPS_PROXY=${http_proxy}"
   fi
 
   DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
 
   echo "Building ${DOCKER_TAG}"
-  docker build ${OPTS} -t "${DOCKER_TAG}" .
+  echo "Running docker build ${F_OPTS} -t \"${DOCKER_TAG}\" ."
+  eval docker build ${F_OPTS} -t "${DOCKER_TAG}" .
   if [  $? -eq 0  ] ; then
     echo "Built ${DOCKER_TAG}"
   fi
@@ -187,15 +190,18 @@ dip() {
 }
 
 vbip(){
+  OIFS="$IFS"
+  IFS=$'\n'
   for vm in $(VBoxManage list runningvms | awk -F '"' '{print $2}'); do 
     echo "VM: $vm, IP: $(\
-      VBoxManage guestproperty enumerate $vm | \
+      VBoxManage guestproperty enumerate "$vm" | \
       grep "V4/IP"| \
       grep 192 | \
       cut -f2 -d, | \
       cut -f2 -d: \
       )"; 
   done
+  IFS="$OIFS"
 }
 
 vbls(){
