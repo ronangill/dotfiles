@@ -100,9 +100,23 @@ fngrep (){
 }
 
 dgettag (){
+  BASE_NAME="$(basename $(pwd))"
+  if [  ! -z "${DOCKER_STRIP_PREFIX}" ]; then
+    echo "dgettag: striping '${DOCKER_STRIP_PREFIX}' from '${BASE_NAME}' : SHELL:${SHELL}"
+    BASE_NAME="$( echo ${BASE_NAME} | sed 's/'$DOCKER_STRIP_PREFIX'//')"
+  fi
+  if [  ! -z "${DOCKER_TAG_BASE}" ]; then
+    echo "${DOCKER_TAG_BASE}/${BASE_NAME}"
+  else
+    echo "$(basename $(dirname $(pwd)))/$(basename $(pwd))"
+  fi
+}
+
+dgettag (){
 
   DOCKER_TAG_VERSION="latest"
   GIT_BRANCH="$(git branch 2>/dev/null | grep \* | cut -d ' ' -f2)"
+  BASE_NAME="$(basename $(pwd))"
 
   if [ ! -z  "${GIT_BRANCH}" ]; then
     if [  "${GIT_BRANCH}" != "master" ]; then
@@ -110,10 +124,14 @@ dgettag (){
     fi
   fi
 
+  if [  ! -z "${DOCKER_STRIP_PREFIX}" ]; then
+    BASE_NAME="$( echo ${BASE_NAME} | sed 's/'$DOCKER_STRIP_PREFIX'//')"
+  fi
+
   if [  ! -z "${DOCKER_TAG_BASE}" ]; then
-    echo "${DOCKER_TAG_BASE}/$(basename $(pwd)):${DOCKER_TAG_VERSION}" | tr '[:upper:]' '[:lower:]'
+    echo "${DOCKER_TAG_BASE}/${BASE_NAME}:${DOCKER_TAG_VERSION}" | tr '[:upper:]' '[:lower:]'
   else
-    echo "$(basename $(dirname $(pwd)))/$(basename $(pwd)):${DOCKER_TAG_VERSION}" | tr '[:upper:]' '[:lower:]'
+    echo "$(basename $(dirname $(pwd)))/${BASE_NAME}:${DOCKER_TAG_VERSION}" | tr '[:upper:]' '[:lower:]'
   fi
 }
 
@@ -157,8 +175,6 @@ dpush (){
   DOCKER_TAG="$(dgettag)"
 
   docker push "${DOCKER_TAG}"
-  docker push "${DOCKER_TAG}:latest"
-
 }
 
 drun (){
@@ -168,9 +184,7 @@ drun (){
     exit 1
   fi
 
-  DOCKER_TAG="$(dgettag)"
-
-  docker run  -t -i "$@" "${DOCKER_TAG}"
+  docker run  -t -i --rm "$@" $(dgettag)
 
 }
 
@@ -181,9 +195,7 @@ drunbash (){
     exit 1
   fi
 
-  DOCKER_TAG="$(basename $(dirname $(pwd)))/$(basename $(pwd))"
-
-  docker run  -t -i "$@" "${DOCKER_TAG}" /bin/bash
+  docker run  -t -i "$@" $(dgettag) /bin/bash
 
 }
 
