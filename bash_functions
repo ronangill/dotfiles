@@ -2,12 +2,12 @@
 
 echo "Loading functions"
 
-if [[ "${SHELL}" == "zsh" ]]; then
+if [ "${SHELL_TYPE}" = "zsh" ]; then
   echo "setting word split option"
   setopt shwordsplit
 fi
 
-ath_append ()  { path_remove $1; export PATH="$PATH:$1"; }
+path_append ()  { path_remove $1; export PATH="$PATH:$1"; }
 path_prepend () { path_remove $1; export PATH="$1:$PATH"; }
 path_remove ()  { export PATH=`echo -n $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`; }
 
@@ -79,13 +79,15 @@ archive () {
 
 used (){
   if [ -z $1 ]; then
-    dfpath="* .[a-zA-Z0-9_]*"
+    find * -maxdepth 0 -exec du -xsk '{}' \; | \
+      sort -n | \
+      awk '{s=$1; $1="";printf "%8.1f MB %8.1f GB %s \n", s/1024, s/1024/1024, $0}'
   else
-    dfpath="$1/* $1/.[a-zA-Z0-9_]*"
+    echo "passed in $1"
+    find $1/* -maxdepth 1 -exec du -xsk '{}' \; | \
+      sort -n | \
+      awk '{s=$1; $1="";printf "%8.1f MB %8.1f GB %s \n", s/1024, s/1024/1024, $0}'
   fi
-  eval du -xsk $dfpath  | \
-  sort -n | \
-  awk '{s=$1; $1="";printf "%8.1f MB %8.1f GB %s \n", s/1024, s/1024/1024, $0}'
 
 }
 
@@ -98,11 +100,21 @@ fngrep (){
 }
 
 dgettag (){
+
+  DOCKER_TAG_VERSION="latest"
+  GIT_BRANCH="$(git branch 2>/dev/null | grep \* | cut -d ' ' -f2)"
+
+  if [ ! -z  "${GIT_BRANCH}" ]; then
+    if [  "${GIT_BRANCH}" != "master" ]; then
+      DOCKER_TAG_VERSION="${GIT_BRANCH}"
+    fi
+  fi
+
   if [  ! -z "${DOCKER_TAG_BASE}" ]; then
-    echo "${DOCKER_TAG_BASE}/$(basename $(pwd))"
+    echo "${DOCKER_TAG_BASE}/$(basename $(pwd)):${DOCKER_TAG_VERSION}" | tr '[:upper:]' '[:lower:]'
   else
-    echo "$(basename $(dirname $(pwd)))/$(basename $(pwd))"
-  fi  
+    echo "$(basename $(dirname $(pwd)))/$(basename $(pwd)):${DOCKER_TAG_VERSION}" | tr '[:upper:]' '[:lower:]'
+  fi
 }
 
 dbuild (){
@@ -110,11 +122,14 @@ dbuild (){
     echo "Dockerfile not found - nothing to run"
     return 1
   fi
-
   LOCAL_OPTS=""
+  if [ "--cleans" = "$1s" ]; then
+    LOCAL_OPTS="--no-cache=true --force-rm=true "
+  fi
+
   # add paramter "--full" to get a clean build
-  if [ "--fulls" == "$1s" ]; then
-    LOCAL_OPTS="--compress --no-cache=true --force-rm=true"
+  if [ "--fulls" = "$1s" ]; then
+    LOCAL_OPTS="--compress --no-cache=true --force-rm=true --squash"
   fi
 
   if [  ! -z "${http_proxy}" ]; then
@@ -198,14 +213,14 @@ dip() {
 vbip(){
   OIFS="$IFS"
   IFS=$'\n'
-  for vm in $(VBoxManage list runningvms | awk -F '"' '{print $2}'); do 
+  for vm in $(VBoxManage list runningvms | awk -F '"' '{print $2}'); do
     echo "VM: $vm, IP: $(\
       VBoxManage guestproperty enumerate "$vm" | \
       grep "V4/IP"| \
       grep 192 | \
       cut -f2 -d, | \
       cut -f2 -d: \
-      )"; 
+      )";
   done
   IFS="$OIFS"
 }
@@ -219,7 +234,7 @@ vbup(){
     echo "No virtualbox name supplied"
     exit 1
   fi
-  
+
   VBoxManage startvm "$1"  --type headless
 }
 
