@@ -253,3 +253,22 @@ vbup(){
 parse_git_branch () {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
+
+
+POWERLEVEL9K_TERRAFORM_ICON='\ue782'
+
+prompt_tf_prompt_info() {
+  local workspace="$(cat .terraform/environment 2> /dev/null)" || return
+  local bcolor="red"
+  local fcolor="white"
+  if [[ -n "${workspace}" ]]; then
+      if [ $workspace = "dev" ] || [ $workspace = "sandbox" ] ; then
+         bcolor="purple3"
+         fcolor='white' ;
+      elif [ $workspace = "preprod" ] || [ $workspace = "staging" ] ; then
+         bcolor="purple3"
+         fcolor='white' ;
+      fi
+      "$1_prompt_segment" "$0" "$2" "${bcolor}" "${fcolor}" "$workspace" 'TERRAFORM_ICON'
+  fi
+}
