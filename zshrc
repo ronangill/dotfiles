@@ -10,7 +10,7 @@ echo "Loading Antigen"
 
 POWERLEVEL9K_VCS_HIDE_TAGS=true
 POWERLEVEL9K_INSTALLATION_PATH=$ANTIGEN_BUNDLES/bhilburn/powerlevel9k
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(virtualenv aws context dir_writable dir vcs)
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(virtualenv aws tf_prompt_info context dir_writable dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 POWERLEVEL9K_MODE='nerdfont-complete'
 
@@ -24,6 +24,8 @@ antigen use oh-my-zsh
 
 antigen bundle z
 antigen bundle thefuck
+antigen bundle colored-man-pages
+antigen bundle docker-compose
 antigen bundle git
 antigen bundle git-extras
 # antigen bundle heroku
@@ -42,6 +44,7 @@ antigen bundle zsh-users/zsh-history-substring-search
 antigen bundle docker-compose
 antigen bundle aws
 antigen bundle lukechilds/zsh-nvm
+antigen bundle terraform
 
 antigen theme bhilburn/powerlevel9k powerlevel9k
 
@@ -123,3 +126,4 @@ fi
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/rgill/.sdkman"
 [[ -s "/home/rgill/.sdkman/bin/sdkman-init.sh" ]] && source "/home/rgill/.sdkman/bin/sdkman-init.sh"
+export PATH="$HOME/.local/bin:$PATH"

@@ -77,3 +77,12 @@ alias dps='docker ps --format "table{{.Names}}\t{{.ID}}\t{{.Image}}\t{{.Command}
 # git
 # status of all fodlers
 alias gitas='find . -type d -name .git | while read dir ; do sh -c "cd $dir/../ && echo -e \"\nGIT STATUS IN ${dir//\.git/}\" && git status -s" ; done'
+
+#terraform
+alias tf='terraform'
+alias tfv='terraform validate'
+alias tfi='terraform init'
+alias tfp='terraform plan'
+alias tfa='terraform apply'
+alias tfm='terraform fmt -recursive'
+
