@@ -1,107 +1,51 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-# Path to your oh-my-zsh installation.
-export TERM=xterm-256color
-export ZSH="/home/ronan.gill/.oh-my-zsh"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="agnoster"
-POWERLINE_MULTILINE="true"
-ZSH_THEME="powerlevel9k/powerlevel9k"
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir_writable dir vcs)
+#export TERM="xterm-256color"
+export SHELL_TYPE="zsh"
+echo "Loading ZSH"
+
+echo "Loading Antigen"
+
+POWERLEVEL9K_VCS_HIDE_TAGS=true
+POWERLEVEL9K_INSTALLATION_PATH=$ANTIGEN_BUNDLES/bhilburn/powerlevel9k
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(virtualenv aws context dir_writable dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
-POWERLEVEL9K_MODE='awesome-fontconfig'
-#POWERLEVEL9K_MODE='nerdfont-fontconfig'
+POWERLEVEL9K_MODE='nerdfont-complete'
 
 POWERLEVEL9K_SHORTEN_DIR_LENGTH="2"
 POWERLEVEL9K_PROMPT_ON_NEWLINE="true"
-POWERLEVEL9K_TIME_FORMAT="%D{%H:%M:%S  %d.%m.%y}"
+POWERLEVEL9K_TIME_FORMAT="%D{\uf017 %H:%M \uf073 %d.%m.%y}"
 
-# Uncomment the following line to use case-sensitive completion.
-CASE_SENSITIVE="true"
+source /usr/share/zsh-antigen/antigen.zsh
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-HYPHEN_INSENSITIVE="true"
+antigen use oh-my-zsh
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-DISABLE_AUTO_UPDATE="true"
+antigen bundle z
+antigen bundle thefuck
+antigen bundle git
+antigen bundle git-extras
+# antigen bundle heroku
+antigen bundle pip
+antigen bundle djui/alias-tips
+# antigen bundle lein
+antigen bundle command-not-found
+antigen bundle wd
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle httpie
+antigen bundle colored-man-pages
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-completions
+antigen bundle zsh-history-substring-search
+antigen bundle zsh-users/zsh-history-substring-search
+antigen bundle docker-compose
+antigen bundle aws
+antigen bundle lukechilds/zsh-nvm
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+antigen theme bhilburn/powerlevel9k powerlevel9k
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  git colored-man-pages zsh-autosuggestions zsh-syntax-highlighting docker-compose yum wd
-)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
+antigen apply
 
 echo "Loading bashrc"
 
@@ -138,12 +82,44 @@ test -r $HOME/.dircolors  && eval $( dircolors -b $HOME/.dircolors )
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+bindkey '^ ' autosuggest-accept
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+# bindkey -v
 
-bindkey "${terminfo[khome]}" beginning-of-line
-bindkey "${terminfo[kend]}" end-of-line
-bindkey "\e[1~" beginning-of-line
-bindkey "\e[4~" end-of-line
+# Better searching in command mode
+# bindkey -M vicmd '?' history-incremental-search-backward
+# bindkey -M vicmd '/' history-incremental-search-forward
+
+# Beginning search with arrow keys
+# bindkey "^[OA" up-line-or-beginning-search
+# bindkey "^[OB" down-line-or-beginning-search
+# bindkey -M vicmd "k" up-line-or-beginning-search
+# bindkey -M vicmd "j" down-line-or-beginning-search
+
+# bindkey "^R" history-incremental-search-backward
 
 setopt inc_append_history
-setopt share_hsitory
+setopt share_history
+setopt rm_star_silent
 
+eval $(thefuck --alias)
+
+if [[ "$TERM" == "screen"* ]]; then
+    echo "In screen - setting DISABLE_AUTO_TITLE=\"true\" "
+   export DISABLE_AUTO_TITLE="true"
+fi
+
+if [[ "$(readlink -f ${PWD})" == "$(readlink -f ${HOME}/src)/"* ]] && [ -f ${PWD}/../.zshrc_local ]; then
+    echo "Loading .zshrc from folder one up"
+    . ${PWD}/../.zshrc_local
+fi
+
+if [ -f ${PWD}/.zshrc_local ]; then
+    echo "Loading .zshrc from current folder"
+    . ${PWD}/.zshrc_local
+fi
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/rgill/.sdkman"
+[[ -s "/home/rgill/.sdkman/bin/sdkman-init.sh" ]] && source "/home/rgill/.sdkman/bin/sdkman-init.sh"
