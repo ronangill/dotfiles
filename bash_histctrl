@@ -2,13 +2,13 @@ echo "Loading histctrl"
 
 # append to the history file, don't overwrite it
 
-if [ -z "$BASH_VERSION" ] ; then
+if [[ "${SHELL_TYPE}" == "zsh" ]]; then
   echo "Setting history optons for ZSH"
   setopt APPEND_HISTORY
   setopt extended_history
   setopt hist_ignore_space
   setopt inc_append_history
-  setopt share_history 
+  setopt share_history
 
   if [ "$(uname)" != "Darwin" ]; then
       export HISTFILE=${HOME}/.zsh_history

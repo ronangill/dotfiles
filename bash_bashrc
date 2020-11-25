@@ -8,24 +8,19 @@ esac
 
 BASH_DIR="${HOME}/dotfiles"
 
-if [ -z "$BASH_VERSION" ] ; then
-  SHELL_TYPE="zsh"
-else
-  SHELL_TYPE="bash"
+SHELL_TYPE="bash"
 
-  # check the window size after each command and, if necessary,
-  # update the values of LINES and COLUMNS.
-  shopt -s checkwinsize
-  if which tput > /dev/null 2>&1 && [[ $(tput -T$TERM colors) -ge 8 ]]; then
-    if [ "$(id -u)" == "0" ]; then
-	     export PS1='\n\[\e[1;34m\]\w\[\e[0;0m\]\n\[\e[1;31m\]\u@\h\[\e[0;0m\] \$ '
-    else
-	     export PS1="\n\[\e[1;34m\]\w \[\033[36m\]\$(parse_git_branch)\[\e[0;0m\]\n\[\e[01;32m\]\u@\h\[\e[0;0m\] \$ "
-    fi
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+if which tput > /dev/null 2>&1 && [[ $(tput -T$TERM colors) -ge 8 ]]; then
+  if [ "$(id -u)" == "0" ]; then
+    export PS1='\n\[\e[1;34m\]\w\[\e[0;0m\]\n\[\e[1;31m\]\u@\h\[\e[0;0m\] \$ '
   else
-    export PS1='\n\w\n\u@\h \$ '
+    export PS1="\n\[\e[1;34m\]\w \[\033[36m\]\$(parse_git_branch)\[\e[0;0m\]\n\[\e[01;32m\]\u@\h\[\e[0;0m\] \$ "
   fi
-  
+else
+  export PS1='\n\w\n\u@\h \$ '
 fi
 
 if [ -f /etc/${SHELL_TYPE}rc ]; then

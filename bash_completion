@@ -2,7 +2,7 @@
 
 echo "Loading completion"
 
-if [ ! -z "$BASH_VERSION" ] ; then
+if [ "${SHELL_TYPE}" = "bash" ] ; then
 
     if [ -f /usr/share/bash-completion/bash_completion ]; then
         . /usr/share/bash-completion/bash_completion
