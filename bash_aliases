@@ -22,7 +22,7 @@ alias hgr="history | grep "
 alias svim="sudo vim"
 alias sbash="sudo -s"
 alias sudo="sudo "
-alias df="df -h"
+alias df='df -h -x"squashfs"'
 alias du="du -shc "
 alias ds="df -sh"
 
